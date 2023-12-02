@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.staffmanager.demos.mapper.StaffMapper">
+
+    <resultMap id="getStaffDo" type="StaffDo">
+        <result column="id" property="id"/>
+        <result column="emp_name" property="empName"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="emp_degree_name" property="empDegreeName"/>
+        <result column="sex" property="sex"/>
+        <result column="age" property="age"/>
+    </resultMap>
+
+    <select id="selectStaffList" parameterType="StaffDo" resultMap="getStaffDo">
+        select * from staff_info
+        <where>
+            <if test="empName != null and empName != ''">
+                emp_name like CONCAT('%', #{empName}, '%')
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name  = #{deptName}
+            </if>
+            <if test="empDegreeName != null and empDegreeName != ''">
+                and emp_degree_name = #{empDegreeName}
+            </if>
+        </where>
+        order by id desc
+    </select>
+    
+    <insert id="insertStaff" parameterType="StaffDo">
+        insert into staff_info (emp_name, dept_name, emp_degree_name, sex, age) values 
+        (#{empName}, #{deptName}, #{empDegreeName}, #{sex}, #{age})
+    </insert>
+    
+    <update id="updateStaff" parameterType="StaffDo">
+        update staff_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="empName != null and empName != ''">emp_name = #{empName},</if>
+            <if test="deptName != null and deptName != ''">dept_name = #{deptName},</if>
+            <if test="empDegreeName != null and empDegreeName != ''">emp_degree_name = #{empDegreeName},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="age != null ">age = #{age},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteStaffByIds">
+        delete from staff_info
+        where id in (
+            <foreach collection="staffIds" item="item" separator=",">
+                #{item}
+            </foreach>
+            )
+    </delete>
+
+    <insert id="insertStaffs">
+        insert into staff_info (emp_name, dept_name, emp_degree_name, sex, age) values
+        <foreach collection="staffDoList" item="item" separator=",">
+            (#{item.empName}, #{item.deptName}, #{item.empDegreeName}, #{item.sex}, #{item.age})
+        </foreach>
+
+    </insert>
+</mapper>

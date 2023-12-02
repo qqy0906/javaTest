@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.staffmanager.demos.mapper.UserMapper">
+
+    <resultMap id="userResult" type="SysUser">
+        <result column="id" property="id" />
+        <result column="account" property="account" />
+        <result column="name" property="name" />
+        <result column="password" property="password" />
+    </resultMap>
+
+    <select id="getUserByName" resultMap="userResult">
+        select * from sys_user where account = #{account}
+    </select>
+
+    <select id="selectUserById" resultMap="userResult">
+        select * from sys_user where id = #{id}
+    </select>
+</mapper>
